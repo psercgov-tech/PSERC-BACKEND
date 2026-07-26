@@ -1,0 +1,60 @@
+{
+  "chunks": [
+    {
+      "id": "about-pserc",
+      "source": "PSERC website — Who We Are",
+      "title": "About PSERC",
+      "text": "The Plateau State Electricity Regulatory Commission (PSERC) is the state electricity regulator for Plateau State, Nigeria. The Plateau State Electricity Regulatory Commission is an independent regulatory authority charged with regulating electricity operations in Plateau State. We are committed to building a commercially viable, fair and sustainable electricity market that serves every resident. Vision focus: An investor-friendly framework with an efficient market structure that meets the needs of Plateau people for safe, adequate, reliable and affordable electricity.",
+      "boost": 1.2
+    },
+    {
+      "id": "mandate",
+      "source": "PSERC website — Mandate",
+      "title": "PSERC Mandate",
+      "text": "Core mandate of PSERC: To establish a stable legal, commercial and technical regulatory framework for the provision of reliable, safe and affordable electricity to residents of Plateau State.",
+      "boost": 1.2
+    },
+    {
+      "id": "leadership",
+      "source": "PSERC website — Pioneers",
+      "title": "PSERC leadership and pioneers",
+      "text": "PSERC leadership: Barr. Caleb Mutfwang — Governor of Plateau State; Amb. Bagudu M. Hirse — Chairman / Non-Executive Commissioner; Managing Director (to be announced); Barr. Sunday Panwal — Non-Executive Commissioner Legal; Mark Daiei — Executive Commissioner, Finance & Administration; Engineer Julius Agati — Executive Commissioner, Engineering Services and Safety.",
+      "boost": 1.4
+    },
+    {
+      "id": "contact",
+      "source": "PSERC website — Contact",
+      "title": "How to contact PSERC",
+      "text": "Contact PSERC using the Get in Touch form on the official website. Share your name, email and message.",
+      "boost": 1.3
+    },
+    {
+      "id": "electricity-act-2023",
+      "source": "National framework — Electricity Act 2023",
+      "title": "Electricity Act 2023 and state regulation",
+      "text": "Nigeria’s Electricity Act 2023 enables States to establish State Electricity Markets and SERCs. Plateau State enacted the Plateau State Electricity Law, 2024 to establish PSERC.",
+      "boost": 1.15
+    },
+    {
+      "id": "faq-what-is-pserc",
+      "source": "PSERC FAQ",
+      "title": "What is PSERC?",
+      "text": "PSERC means Plateau State Electricity Regulatory Commission — independent regulator for electricity operations in Plateau State.",
+      "boost": 1.5
+    },
+    {
+      "id": "faq-consumers",
+      "source": "PSERC FAQ",
+      "title": "Consumer protection and complaints",
+      "text": "PSERC focuses on consumer protection and fair market rules. Use the website contact form for billing or service concerns.",
+      "boost": 1.2
+    },
+    {
+      "id": "faq-licensing",
+      "source": "PSERC FAQ",
+      "title": "Licensing and investors",
+      "text": "PSERC provides an investor-friendly framework. Licensing is governed by the Plateau State Electricity Law, 2024 and Commission instruments.",
+      "boost": 1.2
+    }
+  ]
+}

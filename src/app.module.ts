@@ -8,6 +8,7 @@ import appConfig from './config/app.config';
 import { ContactsModule } from './contacts/contacts.module';
 import { MediaModule } from './media/media.module';
 import { NewsModule } from './news/news.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { NewsModule } from './news/news.module';
     ContactsModule,
     NewsModule,
     MediaModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
