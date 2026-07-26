@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 import { Model } from 'mongoose';
@@ -23,19 +27,14 @@ export class ChatService {
     const key = sessionKey?.trim() || randomUUID();
     let session = await this.sessions.findOne({ sessionKey: key });
     if (!session) {
+      // Draft session only — visitor identity is saved on introduce.
       session = await this.sessions.create({
         sessionKey: key,
         newsletter: false,
         introduced: false,
       });
-      await this.messages.create({
-        sessionId: session._id,
-        sessionKey: key,
-        role: 'assistant',
-        text: WELCOME,
-      });
     }
-    const history = await this.getHistory(key);
+    const history = session.introduced ? await this.getHistory(key) : [];
     return {
       sessionKey: key,
       introduced: session.introduced,
@@ -46,14 +45,36 @@ export class ChatService {
   }
 
   async introduce(dto: IntroduceDto) {
-    const session = await this.sessions.findOne({ sessionKey: dto.sessionKey });
-    if (!session) throw new NotFoundException('Chat session not found');
+    const key = dto.sessionKey?.trim();
+    if (!key) throw new BadRequestException('sessionKey is required');
 
-    session.visitorName = dto.name?.trim() || session.visitorName;
-    session.visitorEmail = dto.email.trim().toLowerCase();
+    const email = dto.email.trim().toLowerCase();
+    let session = await this.sessions.findOne({ sessionKey: key });
+    if (!session) {
+      session = await this.sessions.create({
+        sessionKey: key,
+        newsletter: false,
+        introduced: false,
+      });
+    }
+
+    session.visitorName = dto.name?.trim() || session.visitorName || '';
+    session.visitorEmail = email;
     session.newsletter = Boolean(dto.newsletter);
     session.introduced = true;
     await session.save();
+
+    const existingCount = await this.messages.countDocuments({
+      sessionKey: session.sessionKey,
+    });
+    if (existingCount === 0) {
+      await this.messages.create({
+        sessionId: session._id,
+        sessionKey: session.sessionKey,
+        role: 'assistant',
+        text: WELCOME,
+      });
+    }
 
     const greetName = session.visitorName ? `, ${session.visitorName}` : '';
     const reply = `Thanks${greetName}! You’re all set. Ask me anything about PSERC or the Plateau State Electricity Law — I’ll keep our previous questions in this chat.`;
@@ -92,6 +113,11 @@ export class ChatService {
   async ask(dto: AskDto) {
     const session = await this.sessions.findOne({ sessionKey: dto.sessionKey });
     if (!session) throw new NotFoundException('Chat session not found');
+    if (!session.introduced || !session.visitorEmail) {
+      throw new BadRequestException(
+        'Please introduce yourself with your email before chatting.',
+      );
+    }
 
     const text = dto.message.trim();
     await this.messages.create({
@@ -116,6 +142,10 @@ export class ChatService {
       text: reply,
     });
 
+    // Bump updatedAt so admin list sorts by recent activity.
+    session.markModified('visitorEmail');
+    await session.save();
+
     return {
       sessionKey: session.sessionKey,
       userMessage: { id: 'pending', role: 'user' as const, text },
@@ -129,8 +159,12 @@ export class ChatService {
   }
 
   async listSessions() {
+    // Only visitors who completed chatbot intro (email saved).
     const rows = await this.sessions
-      .find()
+      .find({
+        introduced: true,
+        visitorEmail: { $exists: true, $nin: [null, ''] },
+      })
       .sort({ updatedAt: -1 })
       .limit(200)
       .lean();
