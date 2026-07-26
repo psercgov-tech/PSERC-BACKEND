@@ -2,18 +2,46 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   app.setGlobalPrefix('api');
+  app.use(cookieParser());
+
+  const frontendUrl = configService.get<string>('app.frontendUrl');
+  const origins = [
+    frontendUrl,
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+  ].filter(Boolean) as string[];
+
   app.enableCors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (!origin || origins.includes(origin) || origins.includes('*')) {
+        callback(null, true);
+        return;
+      }
+      // Allow Vercel preview deployments of this project.
+      if (/^https:\/\/[\w-]+\.vercel\.app$/.test(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(null, false);
+    },
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: '*',
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Device-Binding',
+      'X-Device-Fingerprint',
+    ],
     credentials: true,
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -46,7 +74,6 @@ async function bootstrap() {
     },
   });
 
-  const configService = app.get(ConfigService);
   const port = configService.get<number>('app.port') ?? 4000;
   await app.listen(port);
   // eslint-disable-next-line no-console

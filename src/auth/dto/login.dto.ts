@@ -10,4 +10,12 @@ export class LoginDto {
   @IsString()
   @MinLength(8)
   password: string;
+
+  @ApiProperty({
+    description: 'Stable browser fingerprint for session binding',
+    example: 'a1b2c3d4e5f6789012345678',
+  })
+  @IsString()
+  @MinLength(16)
+  deviceFingerprint: string;
 }

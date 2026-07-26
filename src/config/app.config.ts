@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export default registerAs('app', () => ({
   port: parseInt(process.env.PORT ?? '4000', 10),
   mongodbUri: process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/pserc',
@@ -7,7 +9,16 @@ export default registerAs('app', () => ({
   jwt: {
     accessSecret:
       process.env.JWT_ACCESS_SECRET ?? 'pserc-dev-access-secret-change-me',
-    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '1d',
+    // Shorter-lived admin tokens; session binding enforces browser lock.
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '8h',
+  },
+  cookie: {
+    secure:
+      process.env.COOKIE_SECURE === 'true' ||
+      (isProd && process.env.COOKIE_SECURE !== 'false'),
+    sameSite:
+      (process.env.COOKIE_SAME_SITE as 'lax' | 'none' | 'strict') ||
+      (isProd ? 'none' : 'lax'),
   },
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME,

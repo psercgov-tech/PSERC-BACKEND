@@ -129,6 +129,75 @@ export class ChatService {
   }
 
   async listSessions() {
-    return this.sessions.find().sort({ updatedAt: -1 }).limit(200).lean();
+    const rows = await this.sessions
+      .find()
+      .sort({ updatedAt: -1 })
+      .limit(200)
+      .lean();
+
+    const enriched = await Promise.all(
+      rows.map(async (session) => {
+        const messageCount = await this.messages.countDocuments({
+          sessionKey: session.sessionKey,
+        });
+        const last = await this.messages
+          .findOne({ sessionKey: session.sessionKey })
+          .sort({ createdAt: -1 })
+          .lean();
+
+        return {
+          id: String(session._id),
+          sessionKey: session.sessionKey,
+          visitorName: session.visitorName || '',
+          visitorEmail: session.visitorEmail || '',
+          newsletter: Boolean(session.newsletter),
+          introduced: Boolean(session.introduced),
+          messageCount,
+          lastMessage: last?.text || '',
+          lastMessageAt:
+            (last as { createdAt?: Date } | null)?.createdAt ||
+            (session as { updatedAt?: Date }).updatedAt,
+          createdAt: (session as { createdAt?: Date }).createdAt,
+          updatedAt: (session as { updatedAt?: Date }).updatedAt,
+        };
+      }),
+    );
+
+    return enriched.sort(
+      (a, b) =>
+        new Date(b.lastMessageAt || 0).getTime() -
+        new Date(a.lastMessageAt || 0).getTime(),
+    );
+  }
+
+  async getSessionForAdmin(sessionKey: string) {
+    const key = sessionKey?.trim();
+    if (!key) throw new NotFoundException('Chat session not found');
+
+    const session = await this.sessions.findOne({ sessionKey: key }).lean();
+    if (!session) throw new NotFoundException('Chat session not found');
+
+    const messages = await this.messages
+      .find({ sessionKey: key })
+      .sort({ createdAt: -1 })
+      .limit(500)
+      .lean();
+
+    return {
+      id: String(session._id),
+      sessionKey: session.sessionKey,
+      visitorName: session.visitorName || '',
+      visitorEmail: session.visitorEmail || '',
+      newsletter: Boolean(session.newsletter),
+      introduced: Boolean(session.introduced),
+      createdAt: (session as { createdAt?: Date }).createdAt,
+      updatedAt: (session as { updatedAt?: Date }).updatedAt,
+      messages: messages.map((m) => ({
+        id: String(m._id),
+        role: m.role as 'user' | 'assistant' | 'system',
+        text: m.text,
+        createdAt: (m as { createdAt?: Date }).createdAt,
+      })),
+    };
   }
 }

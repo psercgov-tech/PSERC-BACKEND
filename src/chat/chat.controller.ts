@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
@@ -34,5 +42,12 @@ export class ChatController {
   @Get('sessions')
   listSessions() {
     return this.chatService.listSessions();
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Get('sessions/:sessionKey')
+  getSession(@Param('sessionKey') sessionKey: string) {
+    return this.chatService.getSessionForAdmin(sessionKey);
   }
 }
