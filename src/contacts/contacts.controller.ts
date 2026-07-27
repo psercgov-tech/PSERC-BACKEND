@@ -11,7 +11,10 @@ import {
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ContactsService } from './contacts.service';
-import { CreateContactDto } from './dto/create-contact.dto';
+import {
+  CreateContactDto,
+  UpdateContactStatusDto,
+} from './dto/create-contact.dto';
 
 @ApiTags('contacts')
 @Controller('contacts')
@@ -32,9 +35,23 @@ export class ContactsController {
 
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @Get('complaints')
+  findComplaints() {
+    return this.contactsService.findComplaints();
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/read')
   markRead(@Param('id') id: string) {
     return this.contactsService.markRead(id);
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateContactStatusDto) {
+    return this.contactsService.updateStatus(id, dto.status);
   }
 
   @ApiBearerAuth('access-token')

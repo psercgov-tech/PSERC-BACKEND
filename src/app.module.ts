@@ -9,6 +9,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { MediaModule } from './media/media.module';
 import { NewsModule } from './news/news.module';
 import { ChatModule } from './chat/chat.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ChatModule } from './chat/chat.module';
     NewsModule,
     MediaModule,
     ChatModule,
+    StatsModule,
   ],
 })
 export class AppModule {}

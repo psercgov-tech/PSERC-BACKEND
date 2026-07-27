@@ -1,5 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsIn,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class CreateContactDto {
   @ApiProperty()
@@ -15,4 +21,18 @@ export class CreateContactDto {
   @IsString()
   @MinLength(5)
   message: string;
+
+  @ApiPropertyOptional({
+    enum: ['complaint', 'inquiry', 'general'],
+    default: 'inquiry',
+  })
+  @IsOptional()
+  @IsIn(['complaint', 'inquiry', 'general'])
+  type?: 'complaint' | 'inquiry' | 'general';
+}
+
+export class UpdateContactStatusDto {
+  @ApiProperty({ enum: ['open', 'pending', 'resolved'] })
+  @IsIn(['open', 'pending', 'resolved'])
+  status: 'open' | 'pending' | 'resolved';
 }
