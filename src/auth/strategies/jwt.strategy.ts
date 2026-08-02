@@ -23,6 +23,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(req: Request, payload: JwtPayload) {
+    if (payload?.role !== 'admin') {
+      throw new UnauthorizedException('Invalid session token');
+    }
+
     const cookieBinding =
       typeof req.cookies?.[DEVICE_COOKIE] === 'string'
         ? req.cookies[DEVICE_COOKIE]

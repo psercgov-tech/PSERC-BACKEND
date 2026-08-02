@@ -10,6 +10,7 @@ import { MediaModule } from './media/media.module';
 import { NewsModule } from './news/news.module';
 import { ChatModule } from './chat/chat.module';
 import { StatsModule } from './stats/stats.module';
+import { PortalModule } from './portal/portal.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { StatsModule } from './stats/stats.module';
     CloudinaryModule,
     AdminsModule,
     AuthModule,
+    PortalModule,
     ContactsModule,
     NewsModule,
     MediaModule,

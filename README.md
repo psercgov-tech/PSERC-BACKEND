@@ -33,6 +33,11 @@ Default admin (seeded on boot):
 |--------|------|------|-------------|
 | POST | `/api/auth/login` | public | Admin login |
 | GET | `/api/auth/me` | JWT | Current admin |
+| POST | `/api/portal/auth/register` | public | Portal user register |
+| POST | `/api/portal/auth/login` | public | Portal user login |
+| GET | `/api/portal/auth/me` | portal JWT | Current portal user |
+| GET | `/api/portal/complaints` | portal JWT | List own complaints |
+| POST | `/api/portal/complaints` | portal JWT | Submit complaint |
 | POST | `/api/contacts` | public | Get in Touch form |
 | GET | `/api/contacts` | JWT | List messages |
 | DELETE | `/api/contacts/:id` | JWT | Delete message |
