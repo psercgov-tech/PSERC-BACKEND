@@ -14,6 +14,10 @@ export class Admin {
   @Prop({ required: true, trim: true })
   name: string;
 
+  /** Lowercase initials used to build {initials}@pserc.plateau.gov.ng */
+  @Prop({ trim: true, lowercase: true, default: '' })
+  initials: string;
+
   @Prop({ default: true })
   isActive: boolean;
 }
