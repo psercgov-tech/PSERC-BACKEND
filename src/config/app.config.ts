@@ -2,15 +2,36 @@ import { registerAs } from '@nestjs/config';
 
 const isProd = process.env.NODE_ENV === 'production';
 
+const DEFAULT_JWT_SECRET = 'pserc-dev-access-secret-change-me';
+
+function jwtSecret() {
+  const secret = process.env.JWT_ACCESS_SECRET ?? DEFAULT_JWT_SECRET;
+  if (isProd && (!process.env.JWT_ACCESS_SECRET || secret.includes('change-me'))) {
+    throw new Error(
+      'JWT_ACCESS_SECRET must be set to a strong unique value in production.',
+    );
+  }
+  return secret;
+}
+
+function extraOrigins() {
+  return (process.env.FRONTEND_ORIGINS ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 export default registerAs('app', () => ({
   port: parseInt(process.env.PORT ?? '4000', 10),
   mongodbUri: process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/pserc',
   frontendUrl: process.env.FRONTEND_URL ?? 'http://localhost:5173',
+  frontendOrigins: extraOrigins(),
+  enableSwagger:
+    process.env.ENABLE_SWAGGER === 'true' ||
+    (!isProd && process.env.ENABLE_SWAGGER !== 'false'),
   jwt: {
-    accessSecret:
-      process.env.JWT_ACCESS_SECRET ?? 'pserc-dev-access-secret-change-me',
-    // Shorter-lived admin tokens; session binding enforces browser lock.
-    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '8h',
+    accessSecret: jwtSecret(),
+    accessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '4h',
   },
   cookie: {
     secure:

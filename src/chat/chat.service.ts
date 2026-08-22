@@ -12,7 +12,7 @@ import { ChatSession, ChatSessionDocument } from './chat-session.schema';
 import { AskDto, IntroduceDto } from './dto/chat.dto';
 
 const WELCOME =
-  'Hi there — I’m the PSERC assistant. Ask me about the Commission, leadership, licensing, consumers, or the Plateau State Electricity Law, 2024. I remember this conversation so you can revisit previous questions anytime.';
+  'This is the PSERC enquiry desk. You may ask about the Commission, leadership, licensing, consumers, published regulations and business rules, or the Plateau State Electricity Law, 2024.';
 
 @Injectable()
 export class ChatService {
@@ -76,8 +76,8 @@ export class ChatService {
       });
     }
 
-    const greetName = session.visitorName ? `, ${session.visitorName}` : '';
-    const reply = `Thanks${greetName}! You’re all set. Ask me anything about PSERC or the Plateau State Electricity Law — I’ll keep our previous questions in this chat.`;
+    const reply =
+      'You can now ask about PSERC, published regulations under Resources → Documents, or the Plateau State Electricity Law.';
 
     await this.messages.create({
       sessionId: session._id,

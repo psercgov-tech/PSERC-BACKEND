@@ -8,6 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ChatService } from './chat.service';
 import { AskDto, CreateSessionDto, IntroduceDto } from './dto/chat.dto';
@@ -32,6 +33,7 @@ export class ChatController {
     return this.chatService.getHistory(sessionKey);
   }
 
+  @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @Post('ask')
   ask(@Body() dto: AskDto) {
     return this.chatService.ask(dto);

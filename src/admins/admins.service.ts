@@ -30,6 +30,12 @@ export class AdminsService implements OnModuleInit {
     if (existing) return;
 
     const password = this.configService.getOrThrow<string>('app.admin.password');
+    const isProd = process.env.NODE_ENV === 'production';
+    if (isProd && (!process.env.ADMIN_PASSWORD || password === 'Admin@123456')) {
+      throw new Error(
+        'ADMIN_PASSWORD must be set to a unique value before first admin seed in production.',
+      );
+    }
     const name = this.configService.getOrThrow<string>('app.admin.name');
     const hash = await argon2.hash(password);
 

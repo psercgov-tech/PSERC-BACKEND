@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AdminsModule } from './admins/admins.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
@@ -11,6 +13,7 @@ import { NewsModule } from './news/news.module';
 import { ChatModule } from './chat/chat.module';
 import { StatsModule } from './stats/stats.module';
 import { PortalModule } from './portal/portal.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -28,11 +31,16 @@ import { PortalModule } from './portal/portal.module';
     AdminsModule,
     AuthModule,
     PortalModule,
+    DocumentsModule,
     ContactsModule,
     NewsModule,
     MediaModule,
     ChatModule,
     StatsModule,
+    ThrottlerModule.forRoot({
+      throttlers: [{ name: 'default', ttl: 60_000, limit: 80 }],
+    }),
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

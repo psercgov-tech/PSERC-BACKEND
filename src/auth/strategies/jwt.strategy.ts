@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthService, DEVICE_COOKIE } from '../auth.service';
+import { AuthService } from '../auth.service';
 import { JwtPayload } from '../jwt-payload';
 
 export type { JwtPayload };
@@ -27,12 +27,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UnauthorizedException('Invalid session token');
     }
 
-    const cookieBinding =
-      typeof req.cookies?.[DEVICE_COOKIE] === 'string'
-        ? req.cookies[DEVICE_COOKIE]
-        : undefined;
     const headerBinding = req.header('x-device-binding') || undefined;
-    const deviceBinding = cookieBinding || headerBinding;
+    const deviceBinding = headerBinding;
     const fingerprint = req.header('x-device-fingerprint') || undefined;
     const userAgent = req.header('user-agent') || undefined;
 

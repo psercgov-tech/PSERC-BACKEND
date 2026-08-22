@@ -5,6 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { Contact, ContactSchema } from '../contacts/contact.schema';
 import { PortalController } from './portal.controller';
+import {
+  PortalSession,
+  PortalSessionSchema,
+} from './portal-session.schema';
 import { PortalUser, PortalUserSchema } from './portal-user.schema';
 import { PortalService } from './portal.service';
 import { PortalJwtStrategy } from './strategies/portal-jwt.strategy';
@@ -13,6 +17,7 @@ import { PortalJwtStrategy } from './strategies/portal-jwt.strategy';
   imports: [
     MongooseModule.forFeature([
       { name: PortalUser.name, schema: PortalUserSchema },
+      { name: PortalSession.name, schema: PortalSessionSchema },
       { name: Contact.name, schema: ContactSchema },
     ]),
     PassportModule.register({}),

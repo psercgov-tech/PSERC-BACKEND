@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import {
   PortalComplaintDto,
@@ -15,14 +17,16 @@ import { PortalService } from './portal.service';
 export class PortalController {
   constructor(private readonly portalService: PortalService) {}
 
+  @Throttle({ default: { limit: 8, ttl: 60_000 } })
   @Post('auth/register')
-  register(@Body() dto: PortalRegisterDto) {
-    return this.portalService.register(dto);
+  register(@Body() dto: PortalRegisterDto, @Req() req: Request) {
+    return this.portalService.register(dto, req.header('user-agent'));
   }
 
+  @Throttle({ default: { limit: 8, ttl: 60_000 } })
   @Post('auth/login')
-  login(@Body() dto: PortalLoginDto) {
-    return this.portalService.login(dto);
+  login(@Body() dto: PortalLoginDto, @Req() req: Request) {
+    return this.portalService.login(dto, req.header('user-agent'));
   }
 
   @ApiBearerAuth('access-token')
@@ -35,8 +39,8 @@ export class PortalController {
   @ApiBearerAuth('access-token')
   @UseGuards(PortalJwtAuthGuard)
   @Post('auth/logout')
-  logout() {
-    return { ok: true };
+  logout(@CurrentUser() user: PortalJwtPayload) {
+    return this.portalService.logout(user.sid);
   }
 
   @ApiBearerAuth('access-token')

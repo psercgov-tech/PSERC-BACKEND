@@ -1,13 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ContactsService } from './contacts.service';
@@ -21,6 +13,7 @@ import {
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
+  @Throttle({ default: { limit: 8, ttl: 60_000 } })
   @Post()
   create(@Body() dto: CreateContactDto) {
     return this.contactsService.create(dto);

@@ -3,4 +3,6 @@ export type PortalJwtPayload = {
   email: string;
   role: 'portal';
   name: string;
+  sid: string;
+  fp: string;
 };

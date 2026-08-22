@@ -139,7 +139,7 @@ export function answerFromKnowledge(
   const chunks = loadChunks();
   const q = question.trim();
   if (!q) {
-    return 'Please ask a question about PSERC, our leadership, news, or the Plateau State Electricity Law, 2024.';
+    return 'Please ask a question about PSERC, our leadership, news, published regulations, or the Plateau State Electricity Law, 2024.';
   }
 
   const contextTokens = recentContext
@@ -163,7 +163,7 @@ export function answerFromKnowledge(
   if (!ranked.length || ranked[0].score < 1.4) {
     return [
       'I could not find a clear answer in my current sources.',
-      'You can ask about: who PSERC is, our mandate, leadership (Pioneers), how to contact us, licensing/consumers, the Electricity Act 2023, or the Plateau State Electricity Law, 2024.',
+      'You can ask about: who PSERC is, our mandate, leadership (Pioneers), how to contact us, licensing/consumers, published regulations under Resources → Documents, the Electricity Act 2023, or the Plateau State Electricity Law, 2024.',
       'You can also view previous messages in this chat — I remember this conversation on our servers.',
     ].join(' ');
   }
@@ -192,7 +192,7 @@ export function answerFromKnowledge(
 
   lines.push(
     '',
-    'Guidance only — for legal certainty, check the official Plateau State Electricity Law, 2024 PDF and PSERC publications.',
+    'Guidance only. For the official text, read PSERC regulations under Resources → Documents on this website. Sign in only if you need to download a PDF.',
   );
 
   return lines.join('\n');

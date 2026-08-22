@@ -55,6 +55,55 @@
       "title": "Licensing and investors",
       "text": "PSERC provides an investor-friendly framework. Licensing is governed by the Plateau State Electricity Law, 2024 and Commission instruments.",
       "boost": 1.2
+    },
+    {
+      "id": "documents-library",
+      "source": "PSERC website — Documents",
+      "title": "PSERC documents and regulations",
+      "text": "Under Resources → Documents, PSERC publishes Business Rules, Captive Power Generation Regulations, Customer Service Standards and Protection Regulation, Licensing Regulations, Mini Grid Regulations, and the Tariff Methodology Regulation. Anyone may read these files on the website. Downloading a PDF requires signing in to the PSERC Portal.",
+      "boost": 1.7
+    },
+    {
+      "id": "doc-business-rules",
+      "source": "PSERC website — Documents",
+      "title": "Business Rules",
+      "text": "The PSERC Business Rules set out Commission processes for market participants. Read them under Resources → Documents. Sign in to the portal only if you need to download the PDF.",
+      "boost": 1.35
+    },
+    {
+      "id": "doc-captive-power",
+      "source": "PSERC website — Documents",
+      "title": "Captive Power Generation Regulations",
+      "text": "The Captive Power Generation Regulations govern captive power generation in Plateau State. Read them under Resources → Documents.",
+      "boost": 1.35
+    },
+    {
+      "id": "doc-customer-service",
+      "source": "PSERC website — Documents",
+      "title": "Customer Service Standards and Protection Regulation",
+      "text": "The Customer Service Standards and Protection Regulation sets standards and protections for electricity consumers in Plateau State. Read it under Resources → Documents.",
+      "boost": 1.35
+    },
+    {
+      "id": "doc-licensing",
+      "source": "PSERC website — Documents",
+      "title": "Licensing Regulations",
+      "text": "The Licensing Regulations set rules for applying, holding and complying with PSERC licences. Read them under Resources → Documents.",
+      "boost": 1.35
+    },
+    {
+      "id": "doc-mini-grid",
+      "source": "PSERC website — Documents",
+      "title": "Mini Grid Regulations",
+      "text": "The Mini Grid Regulations set the framework for mini-grid operations in Plateau State. Read them under Resources → Documents.",
+      "boost": 1.35
+    },
+    {
+      "id": "doc-tariff",
+      "source": "PSERC website — Documents",
+      "title": "Tariff Methodology Regulation",
+      "text": "The Tariff Methodology Regulation sets the methodology for electricity tariff setting and related reviews. Read it under Resources → Documents.",
+      "boost": 1.35
     }
   ]
 }

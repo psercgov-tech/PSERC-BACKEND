@@ -73,16 +73,6 @@ export class AuthService {
     ) ?? 'lax';
   }
 
-  setDeviceCookie(res: Response, binding: string, maxAgeMs: number) {
-    res.cookie(DEVICE_COOKIE, binding, {
-      httpOnly: true,
-      secure: this.cookieSecure(),
-      sameSite: this.cookieSameSite(),
-      path: '/',
-      maxAge: maxAgeMs,
-    });
-  }
-
   clearDeviceCookie(res: Response) {
     res.clearCookie(DEVICE_COOKIE, {
       httpOnly: true,
@@ -150,7 +140,7 @@ export class AuthService {
       ) as `${number}d` | `${number}h` | `${number}m`,
     });
 
-    this.setDeviceCookie(res, deviceBinding, ttlMs);
+    this.clearDeviceCookie(res);
 
     return {
       accessToken,
