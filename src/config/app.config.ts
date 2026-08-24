@@ -3,12 +3,15 @@ import { registerAs } from '@nestjs/config';
 const isProd = process.env.NODE_ENV === 'production';
 
 const DEFAULT_JWT_SECRET = 'pserc-dev-access-secret-change-me';
+const MIN_JWT_SECRET_LENGTH = 32;
 
 function jwtSecret() {
   const secret = process.env.JWT_ACCESS_SECRET ?? DEFAULT_JWT_SECRET;
-  if (isProd && (!process.env.JWT_ACCESS_SECRET || secret.includes('change-me'))) {
+  const isDefault = secret === DEFAULT_JWT_SECRET;
+  const tooShort = secret.length < MIN_JWT_SECRET_LENGTH;
+  if (isProd && (!process.env.JWT_ACCESS_SECRET || isDefault || tooShort)) {
     throw new Error(
-      'JWT_ACCESS_SECRET must be set to a strong unique value in production.',
+      'JWT_ACCESS_SECRET must be set to a strong unique value in production (at least 32 characters).',
     );
   }
   return secret;
