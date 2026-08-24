@@ -5,14 +5,19 @@ const RESET_CODE_MINUTES = 15;
 /**
  * Forgot password — email contains a 6-digit code the user enters on the reset page.
  */
-export function buildPasswordResetEmail(name: string, code: string) {
+export function buildPasswordResetEmail(
+  name: string,
+  code: string,
+  email: string,
+) {
   const mailgen = getMailgen();
   const baseUrl = (
     process.env.FRONTEND_URL || 'https://pserc.vercel.app'
   ).replace(/\/$/, '');
-  const resetPage = `${baseUrl}/#/portal/reset-password`;
+  const q = new URLSearchParams({ email: email.trim().toLowerCase() });
+  const resetPage = `${baseUrl}/#/portal/reset-password?${q.toString()}`;
 
-  const email = {
+  const emailBody = {
     body: {
       name,
       intro: [
@@ -22,7 +27,7 @@ export function buildPasswordResetEmail(name: string, code: string) {
       ],
       action: {
         instructions:
-          'Go to the reset password page and enter this code with your new password.',
+          'Open the reset page and enter this code with your new password.',
         button: {
           color: '#025830',
           text: 'Reset password',
@@ -36,8 +41,8 @@ export function buildPasswordResetEmail(name: string, code: string) {
 
   return {
     subject: 'PSERC Portal — Your password reset code',
-    html: mailgen.generate(email),
-    text: mailgen.generatePlaintext(email),
+    html: mailgen.generate(emailBody),
+    text: mailgen.generatePlaintext(emailBody),
   };
 }
 

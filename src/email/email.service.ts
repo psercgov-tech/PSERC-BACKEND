@@ -138,7 +138,7 @@ export class EmailService implements OnModuleInit {
     name: string,
     code: string,
   ): Promise<void> {
-    const { subject, html, text } = buildPasswordResetEmail(name, code);
+    const { subject, html, text } = buildPasswordResetEmail(name, code, to);
     await this.sendMail({ to, subject, html, text });
   }
 

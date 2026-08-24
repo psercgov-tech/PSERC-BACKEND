@@ -336,10 +336,15 @@ export class PortalService {
 
     const code = String(Math.floor(100000 + Math.random() * 900000));
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
-    user.passwordResetToken = code;
-    user.resetUrlToken = undefined;
-    user.passwordResetExpires = expiresAt;
-    await user.save();
+    await this.users
+      .findByIdAndUpdate(user._id, {
+        $set: {
+          passwordResetToken: code,
+          passwordResetExpires: expiresAt,
+        },
+        $unset: { resetUrlToken: '' },
+      })
+      .exec();
 
     try {
       await this.emailService.sendPasswordResetEmail(
