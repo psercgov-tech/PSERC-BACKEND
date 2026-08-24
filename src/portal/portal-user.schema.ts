@@ -20,10 +20,11 @@ export class PortalUser {
   @Prop({ default: true })
   isActive: boolean;
 
-  /** Opaque reset token (also mirrored as resetUrlToken for uid+reset links). */
+  /** 6-digit password reset code sent by email. */
   @Prop({ trim: true })
   passwordResetToken?: string;
 
+  /** Legacy link-based reset (uid + reset query params). */
   @Prop({ trim: true })
   resetUrlToken?: string;
 

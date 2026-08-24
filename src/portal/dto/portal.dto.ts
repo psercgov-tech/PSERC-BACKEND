@@ -3,6 +3,8 @@ import {
   IsEmail,
   IsOptional,
   IsString,
+  Length,
+  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -86,19 +88,32 @@ export class PortalForgotPasswordDto {
 }
 
 export class PortalResetPasswordDto {
+  @ApiProperty({ example: 'ada@example.com' })
+  @IsOptional()
+  @IsEmail()
+  @MaxLength(254)
+  email?: string;
+
+  @ApiProperty({ example: '482910', description: '6-digit code from email' })
+  @IsOptional()
+  @IsString()
+  @Length(6, 6, { message: 'Code must be exactly 6 digits' })
+  @Matches(/^\d{6}$/, { message: 'Code must be exactly 6 digits' })
+  code?: string;
+
   /** Legacy: single token from older emails. */
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   token?: string;
 
-  /** User id — use with `reset` (Trackpro-style link). */
+  /** Legacy: user id with `reset` link param. */
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   uid?: string;
 
-  /** Opaque reset segment — use with `uid`. */
+  /** Legacy: opaque reset segment with `uid`. */
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

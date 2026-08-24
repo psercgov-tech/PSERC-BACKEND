@@ -1,46 +1,44 @@
 import { getMailgen } from './mailgen.factory';
 
+const RESET_CODE_MINUTES = 15;
+
 /**
- * Forgot password — link includes user id + opaque `reset` (stored as `resetUrlToken`).
- * Uses hash-router path for the Vite SPA: /#/portal/reset-password?uid=&reset=
+ * Forgot password — email contains a 6-digit code the user enters on the reset page.
  */
-export function buildPasswordResetEmail(
-  name: string,
-  userId: string,
-  resetUrlToken: string,
-) {
+export function buildPasswordResetEmail(name: string, code: string) {
   const mailgen = getMailgen();
   const baseUrl = (
     process.env.FRONTEND_URL || 'https://pserc.vercel.app'
   ).replace(/\/$/, '');
-  const q = new URLSearchParams({
-    uid: userId,
-    reset: resetUrlToken,
-  });
-  const resetLink = `${baseUrl}/#/portal/reset-password?${q.toString()}`;
+  const resetPage = `${baseUrl}/#/portal/reset-password`;
 
   const email = {
     body: {
       name,
       intro: [
         'We received a request to reset the password for your PSERC Portal account.',
-        'This link is valid for 1 hour and is unique to your account.',
+        `Your reset code is: ${code}`,
+        `This code expires in ${RESET_CODE_MINUTES} minutes.`,
       ],
       action: {
-        instructions: 'Click the button below to choose a new password.',
+        instructions:
+          'Go to the reset password page and enter this code with your new password.',
         button: {
           color: '#025830',
           text: 'Reset password',
-          link: resetLink,
+          link: resetPage,
         },
       },
-      outro: `If the button does not work, copy and paste this link into your browser:\n${resetLink}`,
+      outro:
+        'If you did not request a password reset, you can ignore this email — your password will stay the same.',
     },
   };
 
   return {
-    subject: 'PSERC Portal — Reset your password',
+    subject: 'PSERC Portal — Your password reset code',
     html: mailgen.generate(email),
     text: mailgen.generatePlaintext(email),
   };
 }
+
+export { RESET_CODE_MINUTES };

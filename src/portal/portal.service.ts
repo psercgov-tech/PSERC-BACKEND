@@ -9,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon2 from 'argon2';
-import { randomBytes } from 'crypto';
 import { Model, Types } from 'mongoose';
 import {
   createDeviceBinding,
@@ -320,7 +319,8 @@ export class PortalService {
   async forgotPassword(
     dto: PortalForgotPasswordDto,
   ): Promise<{ message: string; emailWarning?: string }> {
-    const message = 'If the email exists, a reset link has been sent.';
+    const message =
+      'If the email exists, a 6-digit reset code has been sent.';
     const email = dto.email.trim().toLowerCase();
     const user = await this.users.findOne({ email }).exec();
     if (!user || !user.isActive) {
@@ -334,10 +334,10 @@ export class PortalService {
       };
     }
 
-    const token = randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-    user.passwordResetToken = token;
-    user.resetUrlToken = token;
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    user.passwordResetToken = code;
+    user.resetUrlToken = undefined;
     user.passwordResetExpires = expiresAt;
     await user.save();
 
@@ -345,8 +345,7 @@ export class PortalService {
       await this.emailService.sendPasswordResetEmail(
         user.email,
         user.name,
-        String(user._id),
-        token,
+        code,
       );
     } catch (err) {
       this.logger.error(
@@ -358,7 +357,7 @@ export class PortalService {
       return {
         message,
         emailWarning:
-          'Reset token saved but the email could not be delivered. Please try again later.',
+          'Reset code saved but the email could not be delivered. Please try again later.',
       };
     }
     return { message };
@@ -367,25 +366,36 @@ export class PortalService {
   async resetPassword(
     dto: PortalResetPasswordDto,
   ): Promise<{ message: string }> {
+    const email = dto.email?.trim().toLowerCase();
+    const code = dto.code?.trim();
     const legacy = dto.token?.trim();
     const uid = dto.uid?.trim();
     const reset = dto.reset?.trim();
+    const hasOtp = !!(email && code);
     const hasPair = !!(uid && reset);
     const hasLegacy = !!legacy;
 
-    if (!hasLegacy && !hasPair) {
+    if (!hasOtp && !hasLegacy && !hasPair) {
       throw new BadRequestException(
-        'Provide either token (legacy) or uid and reset from the reset link.',
+        'Provide email and 6-digit code, or a valid legacy reset token.',
       );
     }
-    if (hasLegacy && hasPair) {
+    if ([hasOtp, hasLegacy, hasPair].filter(Boolean).length > 1) {
       throw new BadRequestException(
-        'Provide either token or uid and reset, not both.',
+        'Provide only one reset method: email+code, token, or uid+reset.',
       );
     }
 
     let user: PortalUserDocument | null = null;
-    if (hasLegacy) {
+    if (hasOtp) {
+      user = await this.users
+        .findOne({
+          email,
+          passwordResetToken: code,
+          passwordResetExpires: { $gt: new Date() },
+        })
+        .exec();
+    } else if (hasLegacy) {
       user = await this.users
         .findOne({
           passwordResetToken: legacy,
@@ -403,7 +413,7 @@ export class PortalService {
     }
 
     if (!user || !user.isActive) {
-      throw new BadRequestException('Invalid or expired reset token');
+      throw new BadRequestException('Invalid or expired reset code');
     }
 
     const password = await argon2.hash(dto.newPassword);

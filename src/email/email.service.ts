@@ -136,14 +136,9 @@ export class EmailService implements OnModuleInit {
   async sendPasswordResetEmail(
     to: string,
     name: string,
-    userId: string,
-    resetUrlToken: string,
+    code: string,
   ): Promise<void> {
-    const { subject, html, text } = buildPasswordResetEmail(
-      name,
-      userId,
-      resetUrlToken,
-    );
+    const { subject, html, text } = buildPasswordResetEmail(name, code);
     await this.sendMail({ to, subject, html, text });
   }
 
