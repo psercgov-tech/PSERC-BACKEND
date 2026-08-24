@@ -5,8 +5,10 @@ import { Request } from 'express';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import {
   PortalComplaintDto,
+  PortalForgotPasswordDto,
   PortalLoginDto,
   PortalRegisterDto,
+  PortalResetPasswordDto,
 } from './dto/portal.dto';
 import { PortalJwtAuthGuard } from './guards/portal-jwt-auth.guard';
 import { PortalJwtPayload } from './portal-jwt-payload';
@@ -27,6 +29,18 @@ export class PortalController {
   @Post('auth/login')
   login(@Body() dto: PortalLoginDto, @Req() req: Request) {
     return this.portalService.login(dto, req.header('user-agent'));
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('auth/forgot-password')
+  forgotPassword(@Body() dto: PortalForgotPasswordDto) {
+    return this.portalService.forgotPassword(dto);
+  }
+
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('auth/reset-password')
+  resetPassword(@Body() dto: PortalResetPasswordDto) {
+    return this.portalService.resetPassword(dto);
   }
 
   @ApiBearerAuth('access-token')

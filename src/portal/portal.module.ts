@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { Contact, ContactSchema } from '../contacts/contact.schema';
+import { EmailModule } from '../email/email.module';
 import { PortalController } from './portal.controller';
 import {
   PortalSession,
@@ -15,6 +16,7 @@ import { PortalJwtStrategy } from './strategies/portal-jwt.strategy';
 
 @Module({
   imports: [
+    EmailModule,
     MongooseModule.forFeature([
       { name: PortalUser.name, schema: PortalUserSchema },
       { name: PortalSession.name, schema: PortalSessionSchema },

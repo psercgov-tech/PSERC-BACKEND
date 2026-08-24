@@ -1,13 +1,16 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon2 from 'argon2';
-import { Model } from 'mongoose';
+import { randomBytes } from 'crypto';
+import { Model, Types } from 'mongoose';
 import {
   createDeviceBinding,
   createSessionId,
@@ -16,10 +19,13 @@ import {
   sha256,
 } from '../auth/session-crypto';
 import { Contact, ContactDocument } from '../contacts/contact.schema';
+import { EmailService } from '../email/email.service';
 import {
   PortalComplaintDto,
+  PortalForgotPasswordDto,
   PortalLoginDto,
   PortalRegisterDto,
+  PortalResetPasswordDto,
 } from './dto/portal.dto';
 import { PortalJwtPayload } from './portal-jwt-payload';
 import {
@@ -30,6 +36,8 @@ import { PortalUser, PortalUserDocument } from './portal-user.schema';
 
 @Injectable()
 export class PortalService {
+  private readonly logger = new Logger(PortalService.name);
+
   constructor(
     @InjectModel(PortalUser.name)
     private readonly users: Model<PortalUserDocument>,
@@ -39,6 +47,7 @@ export class PortalService {
     private readonly contacts: Model<ContactDocument>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   private toPublic(user: PortalUserDocument) {
@@ -306,5 +315,127 @@ export class PortalService {
       isRead: item.isRead,
       createdAt: item.get('createdAt'),
     }));
+  }
+
+  async forgotPassword(
+    dto: PortalForgotPasswordDto,
+  ): Promise<{ message: string; emailWarning?: string }> {
+    const message = 'If the email exists, a reset link has been sent.';
+    const email = dto.email.trim().toLowerCase();
+    const user = await this.users.findOne({ email }).exec();
+    if (!user || !user.isActive) {
+      return { message };
+    }
+    if (!this.emailService.isConfigured()) {
+      this.logger.warn('[email] forgotPassword: email service is not configured');
+      return {
+        message,
+        emailWarning: 'Email service is not configured on this server.',
+      };
+    }
+
+    const token = randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    user.passwordResetToken = token;
+    user.resetUrlToken = token;
+    user.passwordResetExpires = expiresAt;
+    await user.save();
+
+    try {
+      await this.emailService.sendPasswordResetEmail(
+        user.email,
+        user.name,
+        String(user._id),
+        token,
+      );
+    } catch (err) {
+      this.logger.error(
+        `[email] Password reset email failed for ${user.email}: ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+        err instanceof Error ? err.stack : undefined,
+      );
+      return {
+        message,
+        emailWarning:
+          'Reset token saved but the email could not be delivered. Please try again later.',
+      };
+    }
+    return { message };
+  }
+
+  async resetPassword(
+    dto: PortalResetPasswordDto,
+  ): Promise<{ message: string }> {
+    const legacy = dto.token?.trim();
+    const uid = dto.uid?.trim();
+    const reset = dto.reset?.trim();
+    const hasPair = !!(uid && reset);
+    const hasLegacy = !!legacy;
+
+    if (!hasLegacy && !hasPair) {
+      throw new BadRequestException(
+        'Provide either token (legacy) or uid and reset from the reset link.',
+      );
+    }
+    if (hasLegacy && hasPair) {
+      throw new BadRequestException(
+        'Provide either token or uid and reset, not both.',
+      );
+    }
+
+    let user: PortalUserDocument | null = null;
+    if (hasLegacy) {
+      user = await this.users
+        .findOne({
+          passwordResetToken: legacy,
+          passwordResetExpires: { $gt: new Date() },
+        })
+        .exec();
+    } else if (Types.ObjectId.isValid(uid!)) {
+      user = await this.users
+        .findOne({
+          _id: uid,
+          resetUrlToken: reset,
+          passwordResetExpires: { $gt: new Date() },
+        })
+        .exec();
+    }
+
+    if (!user || !user.isActive) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    const password = await argon2.hash(dto.newPassword);
+    await this.users
+      .findByIdAndUpdate(user._id, {
+        $set: { password },
+        $unset: {
+          passwordResetToken: '',
+          passwordResetExpires: '',
+          resetUrlToken: '',
+        },
+      })
+      .exec();
+
+    await this.sessions.updateMany(
+      { userId: user._id, revokedAt: { $exists: false } },
+      { $set: { revokedAt: new Date() } },
+    );
+
+    if (this.emailService.isConfigured()) {
+      try {
+        await this.emailService.sendPasswordChangedEmail(user.email, user.name);
+      } catch (err) {
+        this.logger.error(
+          `[email] password_changed_notify failed for ${user.email}: ${
+            err instanceof Error ? err.message : String(err)
+          }`,
+          err instanceof Error ? err.stack : undefined,
+        );
+      }
+    }
+
+    return { message: 'Password has been reset successfully' };
   }
 }

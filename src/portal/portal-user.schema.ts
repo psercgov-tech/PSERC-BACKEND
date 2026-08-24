@@ -19,6 +19,16 @@ export class PortalUser {
 
   @Prop({ default: true })
   isActive: boolean;
+
+  /** Opaque reset token (also mirrored as resetUrlToken for uid+reset links). */
+  @Prop({ trim: true })
+  passwordResetToken?: string;
+
+  @Prop({ trim: true })
+  resetUrlToken?: string;
+
+  @Prop()
+  passwordResetExpires?: Date;
 }
 
 export const PortalUserSchema = SchemaFactory.createForClass(PortalUser);
