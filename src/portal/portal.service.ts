@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -319,17 +320,15 @@ export class PortalService {
   async forgotPassword(
     dto: PortalForgotPasswordDto,
   ): Promise<{ message: string; emailWarning?: string }> {
-    const message =
-      'If the email exists, a 6-digit reset code has been sent.';
     const email = dto.email.trim().toLowerCase();
     const user = await this.users.findOne({ email }).exec();
     if (!user || !user.isActive) {
-      return { message };
+      throw new NotFoundException('No portal account found for this email.');
     }
     if (!this.emailService.isConfigured()) {
       this.logger.warn('[email] forgotPassword: email service is not configured');
       return {
-        message,
+        message: 'A 6-digit reset code has been sent to your email.',
         emailWarning: 'Email service is not configured on this server.',
       };
     }
@@ -360,12 +359,12 @@ export class PortalService {
         err instanceof Error ? err.stack : undefined,
       );
       return {
-        message,
+        message: 'A 6-digit reset code has been sent to your email.',
         emailWarning:
           'Reset code saved but the email could not be delivered. Please try again later.',
       };
     }
-    return { message };
+    return { message: 'A 6-digit reset code has been sent to your email.' };
   }
 
   async resetPassword(
