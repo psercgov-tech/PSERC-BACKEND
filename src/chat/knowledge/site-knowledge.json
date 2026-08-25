@@ -18,7 +18,7 @@
       "id": "leadership",
       "source": "PSERC website — Pioneers",
       "title": "PSERC leadership and pioneers",
-      "text": "PSERC leadership: Barr. Caleb Mutfwang — Governor of Plateau State; Amb. Bagudu M. Hirse — Chairman / Non-Executive Commissioner; Managing Director (to be announced); Barr. Sunday Panwal — Non-Executive Commissioner Legal; Mark Daiei — Executive Commissioner, Finance & Administration; Engineer Julius Agati — Executive Commissioner, Engineering Services and Safety.",
+      "text": "PSERC leadership: His Excellency Caleb Manaseh Mutfawn — Governor of Plateau State; Amb. Bagudu M. Hirse — Chairman / Non-Executive Commissioner; Managing Director (to be announced); Barr. Sunday Panwal — Non-Executive Commissioner Legal; Mark Daiei — Executive Commissioner, Finance & Administration; Engineer Julius Agati — Executive Commissioner, Engineering Services and Safety.",
       "boost": 1.4
     },
     {
@@ -60,7 +60,7 @@
       "id": "documents-library",
       "source": "PSERC website — Documents",
       "title": "PSERC documents and regulations",
-      "text": "Under Resources → Documents and Regulatory Instruments → Codes, PSERC publishes Business Rules, Captive Power Generation Regulations, Customer Service Standards and Protection Regulation, Licensing Regulations, Mini Grid Regulations, Tariff Methodology Regulation, Draft Grid Code (Version 03), Draft NESIS Regulations 2025, comment sheets, and Who Does What under the Electricity Act 2023. Anyone may read documents on the website. Downloading requires signing in to the PSERC Portal. The chatbot does not download files.",
+      "text": "Under Resources → Documents, Regulations (#/instruments/regulations), Codes (#/instruments/codes) and Forms & Manuals (#/instruments/manuals), PSERC publishes Business Rules, Captive Power Generation Regulations, Customer Service Standards and Protection Regulation, Licensing Regulations, Mini Grid Regulations, Tariff Methodology Regulation, Draft Grid Code (Version 03), Draft NESIS Regulations 2025, comment sheets, Mini-Grid Schedules 1–15, and Who Does What under the Electricity Act 2023. Anyone may read documents on the website. Downloading requires signing in to the PSERC Portal. The chatbot does not download files.",
       "boost": 1.7
     },
     {
@@ -95,8 +95,15 @@
       "id": "doc-mini-grid",
       "source": "PSERC website — Documents",
       "title": "Mini Grid Regulations",
-      "text": "The Mini Grid Regulations set the framework for mini-grid operations in Plateau State. Read them under Resources → Documents or Mini-Grids. Sign in to download.",
+      "text": "The Mini Grid Regulations set the framework for mini-grid operations in Plateau State. Related Schedules 1–15 are under Forms & Manuals. Read regulations under Regulations or Resources → Documents. Sign in to download.",
       "boost": 1.35
+    },
+    {
+      "id": "doc-mini-grid-schedules",
+      "source": "PSERC website — Forms & Manuals",
+      "title": "Mini-Grid Schedules 1–15",
+      "text": "PSERC publishes Mini-Grid Schedules 1–15 as Word templates under Forms & Manuals: exclusive development agreements, registration and permit applications, monitoring templates, HSE, technical requirements, network asset use fee methodology, complaints resolution, tripartite and customer contracts, asset handover, tariff model, and hosting-capacity confirmation. Sign in to download. The chatbot does not download files.",
+      "boost": 1.45
     },
     {
       "id": "doc-tariff",

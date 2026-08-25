@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -327,10 +328,9 @@ export class PortalService {
     }
     if (!this.emailService.isConfigured()) {
       this.logger.warn('[email] forgotPassword: email service is not configured');
-      return {
-        message: 'A 6-digit reset code has been sent to your email.',
-        emailWarning: 'Email service is not configured on this server.',
-      };
+      throw new ServiceUnavailableException(
+        'Password reset email is temporarily unavailable. Please try again later.',
+      );
     }
 
     const code = String(Math.floor(100000 + Math.random() * 900000));
@@ -346,11 +346,19 @@ export class PortalService {
       .exec();
 
     try {
-      await this.emailService.sendPasswordResetEmail(
-        user.email,
-        user.name,
-        code,
-      );
+      await Promise.race([
+        this.emailService.sendPasswordResetEmail(
+          user.email,
+          user.name,
+          code,
+        ),
+        new Promise<never>((_, reject) => {
+          setTimeout(
+            () => reject(new Error('Password reset email timed out')),
+            20_000,
+          );
+        }),
+      ]);
     } catch (err) {
       this.logger.error(
         `[email] Password reset email failed for ${user.email}: ${
@@ -359,9 +367,10 @@ export class PortalService {
         err instanceof Error ? err.stack : undefined,
       );
       return {
-        message: 'A 6-digit reset code has been sent to your email.',
+        message:
+          'Your reset code was created. If you do not receive an email shortly, request a new code.',
         emailWarning:
-          'Reset code saved but the email could not be delivered. Please try again later.',
+          'The reset email could not be delivered right away. You can still enter a code if you received one, or request a new code.',
       };
     }
     return { message: 'A 6-digit reset code has been sent to your email.' };
