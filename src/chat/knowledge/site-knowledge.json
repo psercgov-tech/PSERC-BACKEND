@@ -60,50 +60,71 @@
       "id": "documents-library",
       "source": "PSERC website — Documents",
       "title": "PSERC documents and regulations",
-      "text": "Under Resources → Documents, PSERC publishes Business Rules, Captive Power Generation Regulations, Customer Service Standards and Protection Regulation, Licensing Regulations, Mini Grid Regulations, and the Tariff Methodology Regulation. Anyone may read these files on the website. Downloading a PDF requires signing in to the PSERC Portal.",
+      "text": "Under Resources → Documents and Regulatory Instruments → Codes, PSERC publishes Business Rules, Captive Power Generation Regulations, Customer Service Standards and Protection Regulation, Licensing Regulations, Mini Grid Regulations, Tariff Methodology Regulation, Draft Grid Code (Version 03), Draft NESIS Regulations 2025, comment sheets, and Who Does What under the Electricity Act 2023. Anyone may read documents on the website. Downloading requires signing in to the PSERC Portal. The chatbot does not download files.",
       "boost": 1.7
     },
     {
       "id": "doc-business-rules",
       "source": "PSERC website — Documents",
       "title": "Business Rules",
-      "text": "The PSERC Business Rules set out Commission processes for market participants. Read them under Resources → Documents. Sign in to the portal only if you need to download the PDF.",
+      "text": "The PSERC Business Rules set out Commission processes for market participants. Read them under Resources → Documents. Sign in to download. The chatbot cannot download files.",
       "boost": 1.35
     },
     {
       "id": "doc-captive-power",
       "source": "PSERC website — Documents",
       "title": "Captive Power Generation Regulations",
-      "text": "The Captive Power Generation Regulations govern captive power generation in Plateau State. Read them under Resources → Documents.",
+      "text": "The Captive Power Generation Regulations govern captive power generation in Plateau State. Read them under Resources → Documents. Sign in to download.",
       "boost": 1.35
     },
     {
       "id": "doc-customer-service",
       "source": "PSERC website — Documents",
       "title": "Customer Service Standards and Protection Regulation",
-      "text": "The Customer Service Standards and Protection Regulation sets standards and protections for electricity consumers in Plateau State. Read it under Resources → Documents.",
+      "text": "The Customer Service Standards and Protection Regulation sets standards and protections for electricity consumers in Plateau State. Read it under Resources → Documents. Sign in to download.",
       "boost": 1.35
     },
     {
       "id": "doc-licensing",
       "source": "PSERC website — Documents",
       "title": "Licensing Regulations",
-      "text": "The Licensing Regulations set rules for applying, holding and complying with PSERC licences. Read them under Resources → Documents.",
+      "text": "The Licensing Regulations set rules for applying, holding and complying with PSERC licences. Read them under Resources → Documents. Sign in to download.",
       "boost": 1.35
     },
     {
       "id": "doc-mini-grid",
       "source": "PSERC website — Documents",
       "title": "Mini Grid Regulations",
-      "text": "The Mini Grid Regulations set the framework for mini-grid operations in Plateau State. Read them under Resources → Documents.",
+      "text": "The Mini Grid Regulations set the framework for mini-grid operations in Plateau State. Read them under Resources → Documents or Mini-Grids. Sign in to download.",
       "boost": 1.35
     },
     {
       "id": "doc-tariff",
       "source": "PSERC website — Documents",
       "title": "Tariff Methodology Regulation",
-      "text": "The Tariff Methodology Regulation sets the methodology for electricity tariff setting and related reviews. Read it under Resources → Documents.",
+      "text": "The Tariff Methodology Regulation sets the methodology for electricity tariff setting and related reviews. Read it under Resources → Documents. Sign in to download.",
       "boost": 1.35
+    },
+    {
+      "id": "doc-grid-code",
+      "source": "PSERC website — Codes",
+      "title": "Draft Grid Code Version 03",
+      "text": "The Draft Grid Code (Version 03) is the Grid Code for the Nigerian Electricity Transmission System. It covers general conditions, organisation and objectives, review processes, monitoring and testing, connection conditions, operating code, scheduling and dispatch, and related transmission system rules. View it under Regulatory Instruments → Codes. Download requires signing in to the PSERC Portal. The chatbot does not download files.",
+      "boost": 1.55
+    },
+    {
+      "id": "doc-nesis",
+      "source": "PSERC website — Codes",
+      "title": "Draft NESIS Regulations 2025",
+      "text": "The Draft Nigerian Electricity Supply and Installation Standards (NESIS) Regulations 2025 set standards for engineering designs, installations, commissioning and maintenance of electric power systems, made under the Electricity Act 2023. View under Regulatory Instruments → Codes. Download requires signing in. The chatbot does not download files.",
+      "boost": 1.55
+    },
+    {
+      "id": "doc-who-does-what",
+      "source": "PSERC website — Need Help",
+      "title": "Who Does What under the Electricity Act 2023",
+      "text": "Who Does What under the Electricity Act 2023 explains institutional roles: Federal Ministry of Power; Plateau Electricity Regulatory Commission (PSERC); Nigerian Independent System Operator (NISO); and Transmission Company of Nigeria (TCN). Read at /services/who-does-what. Download the DOCX after signing in.",
+      "boost": 1.5
     }
   ]
 }
