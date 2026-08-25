@@ -5,16 +5,11 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import {
-  CreateMiniGridApplicationDto,
-  UpdateMiniGridApplicationDto,
-  UpdateMiniGridApplicationStatusDto,
-} from './dto/mini-grid-application.dto';
+import { UpdateMiniGridApplicationStatusDto } from './dto/mini-grid-application.dto';
 import { MiniGridApplicationsService } from './mini-grid-applications.service';
 
 @ApiTags('license-applications')
@@ -32,16 +27,6 @@ export class MiniGridApplicationsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(id);
-  }
-
-  @Post()
-  create(@Body() dto: CreateMiniGridApplicationDto) {
-    return this.service.createFromAdmin(dto);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateMiniGridApplicationDto) {
-    return this.service.update(id, dto);
   }
 
   @Patch(':id/status')

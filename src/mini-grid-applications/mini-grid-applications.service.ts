@@ -102,17 +102,6 @@ export class MiniGridApplicationsService {
     return this.toClient(doc);
   }
 
-  async createFromAdmin(dto: CreateMiniGridApplicationDto) {
-    const doc = await this.model.create({
-      ...this.normalize(dto),
-      website: dto.website?.trim() || '',
-      status: 'open',
-      isRead: true,
-      submittedByEmail: '',
-    });
-    return this.toClient(doc);
-  }
-
   async listAll() {
     const docs = await this.model.find().sort({ createdAt: -1 }).exec();
     return docs.map((d) => this.toClient(d));
