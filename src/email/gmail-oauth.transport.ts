@@ -22,6 +22,19 @@ export function createGmailOAuth2Client(cfg: GmailOAuthConfig): OAuth2Client {
 }
 
 /**
+ * Keep Subject headers ASCII-safe for Gmail raw MIME.
+ * Fancy dashes (—, –, …) become mojibake like "Â¢Â€Â"" if left unencoded.
+ */
+function sanitizeSubject(subject: string): string {
+  return subject
+    .replace(/[\u2010-\u2015\u2212]/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/[^\x20-\x7E]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
  * Sends an email via the Gmail REST API (HTTPS only — no SMTP port needed).
  * Uses base64-encoded MIME parts so Gmail renders HTML correctly.
  */
@@ -36,6 +49,7 @@ export async function sendViaGmailApi(
   },
 ): Promise<void> {
   const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+  const subject = sanitizeSubject(options.subject);
 
   const b64 = (s: string) => Buffer.from(s, 'utf-8').toString('base64');
 
@@ -46,7 +60,7 @@ export async function sendViaGmailApi(
     rawMessage = [
       `From: ${options.from}`,
       `To: ${options.to}`,
-      `Subject: ${options.subject}`,
+      `Subject: ${subject}`,
       'MIME-Version: 1.0',
       `Content-Type: multipart/alternative; boundary="${boundary}"`,
       '',
@@ -68,7 +82,7 @@ export async function sendViaGmailApi(
     rawMessage = [
       `From: ${options.from}`,
       `To: ${options.to}`,
-      `Subject: ${options.subject}`,
+      `Subject: ${subject}`,
       'MIME-Version: 1.0',
       'Content-Type: text/plain; charset=utf-8',
       'Content-Transfer-Encoding: base64',
