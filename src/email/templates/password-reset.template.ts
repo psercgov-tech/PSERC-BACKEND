@@ -35,12 +35,12 @@ export function buildPasswordResetEmail(
         },
       },
       outro:
-        'If you did not request a password reset, you can ignore this email — your password will stay the same.',
+        'If you did not request a password reset, you can ignore this email. Your password will stay the same.',
     },
   };
 
   return {
-    subject: 'PSERC Portal — Your password reset code',
+    subject: 'PSERC Portal: Your password reset code',
     html: mailgen.generate(emailBody),
     text: mailgen.generatePlaintext(emailBody),
   };
