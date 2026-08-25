@@ -17,10 +17,10 @@ import {
 } from './dto/mini-grid-application.dto';
 import { MiniGridApplicationsService } from './mini-grid-applications.service';
 
-@ApiTags('mini-grid-applications')
+@ApiTags('license-applications')
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
-@Controller('mini-grid-applications')
+@Controller('license-applications')
 export class MiniGridApplicationsController {
   constructor(private readonly service: MiniGridApplicationsService) {}
 

@@ -77,14 +77,14 @@ export class PortalController {
 
   @ApiBearerAuth('access-token')
   @UseGuards(PortalJwtAuthGuard)
-  @Get('mini-grid-applications')
+  @Get('license-applications')
   listMiniGridApplications(@CurrentUser() user: PortalJwtPayload) {
     return this.portalService.listMiniGridApplications(user.sub);
   }
 
   @ApiBearerAuth('access-token')
   @UseGuards(PortalJwtAuthGuard)
-  @Post('mini-grid-applications')
+  @Post('license-applications')
   createMiniGridApplication(
     @CurrentUser() user: PortalJwtPayload,
     @Body() dto: CreateMiniGridApplicationDto,
