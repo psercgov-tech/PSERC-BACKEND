@@ -14,6 +14,7 @@ import { ChatModule } from './chat/chat.module';
 import { StatsModule } from './stats/stats.module';
 import { PortalModule } from './portal/portal.module';
 import { DocumentsModule } from './documents/documents.module';
+import { MiniGridApplicationsModule } from './mini-grid-applications/mini-grid-applications.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DocumentsModule } from './documents/documents.module';
     AuthModule,
     PortalModule,
     DocumentsModule,
+    MiniGridApplicationsModule,
     ContactsModule,
     NewsModule,
     MediaModule,

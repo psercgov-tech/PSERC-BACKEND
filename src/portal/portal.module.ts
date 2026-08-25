@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { Contact, ContactSchema } from '../contacts/contact.schema';
 import { EmailModule } from '../email/email.module';
+import { MiniGridApplicationsModule } from '../mini-grid-applications/mini-grid-applications.module';
 import { PortalController } from './portal.controller';
 import {
   PortalSession,
@@ -17,6 +18,7 @@ import { PortalJwtStrategy } from './strategies/portal-jwt.strategy';
 @Module({
   imports: [
     EmailModule,
+    MiniGridApplicationsModule,
     MongooseModule.forFeature([
       { name: PortalUser.name, schema: PortalUserSchema },
       { name: PortalSession.name, schema: PortalSessionSchema },

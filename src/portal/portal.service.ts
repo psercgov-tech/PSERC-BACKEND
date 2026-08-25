@@ -21,6 +21,8 @@ import {
 } from '../auth/session-crypto';
 import { Contact, ContactDocument } from '../contacts/contact.schema';
 import { EmailService } from '../email/email.service';
+import { MiniGridApplicationsService } from '../mini-grid-applications/mini-grid-applications.service';
+import { CreateMiniGridApplicationDto } from '../mini-grid-applications/dto/mini-grid-application.dto';
 import {
   PortalComplaintDto,
   PortalForgotPasswordDto,
@@ -49,6 +51,7 @@ export class PortalService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    private readonly miniGridApplications: MiniGridApplicationsService,
   ) {}
 
   private toPublic(user: PortalUserDocument) {
@@ -316,6 +319,28 @@ export class PortalService {
       isRead: item.isRead,
       createdAt: item.get('createdAt'),
     }));
+  }
+
+  async createMiniGridApplication(
+    userId: string,
+    dto: CreateMiniGridApplicationDto,
+  ) {
+    const user = await this.users.findById(userId).exec();
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Portal account not found');
+    }
+    return this.miniGridApplications.createFromPortal(dto, {
+      id: String(user._id),
+      email: user.email,
+    });
+  }
+
+  async listMiniGridApplications(userId: string) {
+    const user = await this.users.findById(userId).exec();
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Portal account not found');
+    }
+    return this.miniGridApplications.listForUser(String(user._id));
   }
 
   async forgotPassword(

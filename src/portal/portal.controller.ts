@@ -13,6 +13,7 @@ import {
 import { PortalJwtAuthGuard } from './guards/portal-jwt-auth.guard';
 import { PortalJwtPayload } from './portal-jwt-payload';
 import { PortalService } from './portal.service';
+import { CreateMiniGridApplicationDto } from '../mini-grid-applications/dto/mini-grid-application.dto';
 
 @ApiTags('portal')
 @Controller('portal')
@@ -72,5 +73,22 @@ export class PortalController {
     @Body() dto: PortalComplaintDto,
   ) {
     return this.portalService.createComplaint(user.sub, dto);
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(PortalJwtAuthGuard)
+  @Get('mini-grid-applications')
+  listMiniGridApplications(@CurrentUser() user: PortalJwtPayload) {
+    return this.portalService.listMiniGridApplications(user.sub);
+  }
+
+  @ApiBearerAuth('access-token')
+  @UseGuards(PortalJwtAuthGuard)
+  @Post('mini-grid-applications')
+  createMiniGridApplication(
+    @CurrentUser() user: PortalJwtPayload,
+    @Body() dto: CreateMiniGridApplicationDto,
+  ) {
+    return this.portalService.createMiniGridApplication(user.sub, dto);
   }
 }
