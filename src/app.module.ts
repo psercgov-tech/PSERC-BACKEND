@@ -15,6 +15,7 @@ import { StatsModule } from './stats/stats.module';
 import { PortalModule } from './portal/portal.module';
 import { DocumentsModule } from './documents/documents.module';
 import { MiniGridApplicationsModule } from './mini-grid-applications/mini-grid-applications.module';
+import { DiscoMonthlyReportsModule } from './disco-monthly-reports/disco-monthly-reports.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MiniGridApplicationsModule } from './mini-grid-applications/mini-grid-a
     PortalModule,
     DocumentsModule,
     MiniGridApplicationsModule,
+    DiscoMonthlyReportsModule,
     ContactsModule,
     NewsModule,
     MediaModule,

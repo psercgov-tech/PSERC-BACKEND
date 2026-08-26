@@ -23,6 +23,8 @@ import { Contact, ContactDocument } from '../contacts/contact.schema';
 import { EmailService } from '../email/email.service';
 import { MiniGridApplicationsService } from '../mini-grid-applications/mini-grid-applications.service';
 import { CreateMiniGridApplicationDto } from '../mini-grid-applications/dto/mini-grid-application.dto';
+import { DiscoMonthlyReportsService } from '../disco-monthly-reports/disco-monthly-reports.service';
+import { CreateDiscoMonthlyReportDto } from '../disco-monthly-reports/dto/disco-monthly-report.dto';
 import {
   PortalComplaintDto,
   PortalForgotPasswordDto,
@@ -52,6 +54,7 @@ export class PortalService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly miniGridApplications: MiniGridApplicationsService,
+    private readonly discoMonthlyReports: DiscoMonthlyReportsService,
   ) {}
 
   private toPublic(user: PortalUserDocument) {
@@ -341,6 +344,29 @@ export class PortalService {
       throw new UnauthorizedException('Portal account not found');
     }
     return this.miniGridApplications.listForUser(String(user._id));
+  }
+
+  async createDiscoMonthlyReport(
+    userId: string,
+    dto: CreateDiscoMonthlyReportDto,
+    file?: Express.Multer.File,
+  ) {
+    const user = await this.users.findById(userId).exec();
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Portal account not found');
+    }
+    return this.discoMonthlyReports.createFromPortal(dto, file, {
+      id: String(user._id),
+      email: user.email,
+    });
+  }
+
+  async listDiscoMonthlyReports(userId: string) {
+    const user = await this.users.findById(userId).exec();
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('Portal account not found');
+    }
+    return this.discoMonthlyReports.listForUser(String(user._id));
   }
 
   async forgotPassword(
