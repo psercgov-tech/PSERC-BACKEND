@@ -32,6 +32,9 @@ async function bootstrap() {
     'http://localhost:5173',
     'http://127.0.0.1:5173',
     'https://pserc.vercel.app',
+    // Official / cPanel production hosts (must match browser Origin exactly)
+    'https://pserc.pl.gov.ng',
+    'https://www.pserc.pl.gov.ng',
   ].filter(Boolean) as string[];
 
   app.enableCors({
